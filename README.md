@@ -44,7 +44,8 @@ py manage.py load_demo_data
 py manage.py runserver
 ```
 
-Application : http://localhost:8000
+Application : http://127.0.0.1:8001
+
 
 Comptes démo (mot de passe `demo1234`) :
 - `demo_producer` — producteur
@@ -55,7 +56,8 @@ Comptes démo (mot de passe `demo1234`) :
 
 ```bash
 cp .env.example .env
-docker compose up --build
+Avec Docker : docker compose up --build
+Puis ouvrir : http://127.0.0.1:8001
 ```
 
 Puis :
