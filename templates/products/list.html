@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="page-header">
+    <h1>Produits agricoles</h1>
+    <p>Catalogue des produits disponibles.</p>
+</div>
+
+<div class="product-grid">
+
+    {% for product in products %}
+
+    <div class="product-card">
+
+        <div class="product-icon">
+            🌾
+        </div>
+
+        <h3>{{ product.name }}</h3>
+
+        <span class="badge">
+            {{ product.category.name }}
+        </span>
+
+        <p>
+            Unité : {{ product.default_unit }}
+        </p>
+
+        <a href="{% url 'product-detail' product.slug %}" class="btn-detail">
+            Voir détail
+        </a>
+
+    </div>
+
+    {% empty %}
+
+    <p>Aucun produit enregistré.</p>
+
+    {% endfor %}
+
+</div>
+
+{% endblock %}

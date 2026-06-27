@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ offer.title }}
+{% endblock %}
+
+{% block content %}
+
+{% include "partials/price_context.html" %}
+
+<div class="page-header d-flex flex-wrap justify-content-between align-items-start gap-3">
+
+    <div>
+        <h1>{{ offer.title }}</h1>
+        <p class="text-muted mb-0">
+            Publiée le {{ offer.created_at|date:"d/m/Y" }}
+        </p>
+    </div>
+
+    <span class="badge bg-success fs-6">
+        {{ offer.get_status_display }}
+    </span>
+
+</div>
+
+<div class="row g-4">
+
+    <div class="col-lg-8">
+
+        <div class="card h-100">
+            <div class="card-body">
+
+                <h2 class="h5">Produit</h2>
+                <p class="mb-4">
+                    <strong>{{ offer.product.name }}</strong>
+                </p>
+
+                <div class="row mb-4">
+                    <div class="col-sm-6">
+                        <h2 class="h6 text-muted">Quantité</h2>
+                        <p>{{ offer.quantity }} {{ offer.unit }}</p>
+                    </div>
+                    <div class="col-sm-6">
+                        <h2 class="h6 text-muted">Prix unitaire</h2>
+                        <p>{{ offer.unit_price }} {{ offer.currency }}/{{ offer.unit }}</p>
+                    </div>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-sm-6">
+                        <h2 class="h6 text-muted">Prix total</h2>
+                        <p>{{ offer.total_price }} {{ offer.currency }}</p>
+                    </div>
+                    {% if offer.available_from %}
+                    <div class="col-sm-6">
+                        <h2 class="h6 text-muted">Disponible à partir du</h2>
+                        <p>{{ offer.available_from|date:"d/m/Y" }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+
+                {% if offer.description %}
+                <h2 class="h5">Description</h2>
+                <p>{{ offer.description|linebreaks }}</p>
+                {% endif %}
+
+            </div>
+        </div>
+
+    </div>
+
+    <div class="col-lg-4">
+
+        <div class="card h-100">
+            <div class="card-body">
+
+                <h2 class="h5">Localisation</h2>
+                <p>{{ offer.city }}, {{ offer.province }}</p>
+
+                <h2 class="h5 mt-4">Vendeur</h2>
+                <p class="mb-1">
+                    {{ offer.producer.get_full_name|default:offer.producer.username }}
+                </p>
+                <p class="text-muted small mb-0">
+                    {{ offer.producer.get_role_display }}
+                </p>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+{% if matching_requests %}
+<div class="mt-5">
+    <h2 class="h4 mb-4">Demandes compatibles</h2>
+    <div class="row g-3">
+        {% for request_obj, score in matching_requests %}
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h5 class="card-title mb-0">{{ request_obj.product.name }}</h5>
+                        <span class="badge bg-primary">Score : {{ score }}/100</span>
+                    </div>
+                    <p class="mb-1"><strong>Acheteur :</strong> {{ request_obj.buyer.username }}</p>
+                    <p class="mb-1"><strong>Province :</strong> {{ request_obj.province }}</p>
+                    <p class="mb-1"><strong>Ville :</strong> {{ request_obj.city }}</p>
+                    <p class="mb-1"><strong>Quantité :</strong> {{ request_obj.quantity }} {{ request_obj.unit }}</p>
+                    <p class="mb-0"><strong>Prix cible :</strong> {{ request_obj.target_price }} {{ request_obj.currency }}/{{ request_obj.unit }}</p>
+                    <a href="{% url 'request-detail' request_obj.id %}" class="btn btn-sm btn-outline-success mt-2">Voir la demande</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p class="text-muted">Aucune demande compatible trouvée.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+{% if user.is_authenticated and user.role == 'buyer' and offer.status == 'active' %}
+<div class="mt-5">
+    <h2 class="h4 mb-3">Passer commande</h2>
+    <div class="card">
+        <div class="card-body">
+            <form method="post" action="{% url 'offer-order-create' offer.pk %}">
+                {% csrf_token %}
+                {{ order_form.as_p }}
+                <button type="submit" class="btn btn-success">Commander</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="mt-4 d-flex gap-2 flex-wrap">
+
+    <a href="{% url 'offers' %}" class="btn btn-secondary">
+        Retour aux offres
+    </a>
+
+    <a href="{% url 'product-detail' offer.product.slug %}" class="btn btn-outline-success">
+        Voir le produit
+    </a>
+
+</div>
+
+{% endblock %}

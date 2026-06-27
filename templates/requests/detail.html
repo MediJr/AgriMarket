@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block title %}
+Demande — {{ purchase_request.product.name }}
+{% endblock %}
+
+{% block content %}
+
+{% include "partials/price_context.html" %}
+
+<div class="page-header d-flex flex-wrap justify-content-between align-items-start gap-3">
+
+    <div>
+        <h1>{{ purchase_request.product.name }}</h1>
+        <p class="text-muted mb-0">
+            Publiée le {{ purchase_request.created_at|date:"d/m/Y" }}
+        </p>
+    </div>
+
+    <span class="badge bg-warning text-dark fs-6">
+        {{ purchase_request.get_status_display }}
+    </span>
+
+</div>
+
+<div class="row g-4">
+
+    <div class="col-lg-8">
+
+        <div class="card h-100">
+            <div class="card-body">
+
+                <div class="row mb-4">
+                    <div class="col-sm-6">
+                        <h2 class="h6 text-muted">Quantité recherchée</h2>
+                        <p>{{ purchase_request.quantity }} {{ purchase_request.unit }}</p>
+                    </div>
+                    <div class="col-sm-6">
+                        <h2 class="h6 text-muted">Prix cible</h2>
+                        <p>
+                            {{ purchase_request.target_price }}
+                            {{ purchase_request.currency }}/{{ purchase_request.unit }}
+                        </p>
+                    </div>
+                </div>
+
+                {% if purchase_request.needed_before %}
+                <div class="mb-4">
+                    <h2 class="h6 text-muted">Date limite</h2>
+                    <p>{{ purchase_request.needed_before|date:"d/m/Y" }}</p>
+                </div>
+                {% endif %}
+
+                {% if purchase_request.description %}
+                <h2 class="h5">Description</h2>
+                <p>{{ purchase_request.description|linebreaks }}</p>
+                {% endif %}
+
+            </div>
+        </div>
+
+    </div>
+
+    <div class="col-lg-4">
+
+        <div class="card h-100">
+            <div class="card-body">
+
+                <h2 class="h5">Localisation</h2>
+                <p>{{ purchase_request.city }}, {{ purchase_request.province }}</p>
+
+                <h2 class="h5 mt-4">Acheteur</h2>
+                <p class="mb-1">
+                    {{ purchase_request.buyer.get_full_name|default:purchase_request.buyer.username }}
+                </p>
+                <p class="text-muted small mb-0">
+                    {{ purchase_request.buyer.get_role_display }}
+                </p>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+{% if matching_offers %}
+<div class="mt-5">
+    <h2 class="h4 mb-4">Offres compatibles</h2>
+    <div class="row g-3">
+        {% for offer, score in matching_offers %}
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h5 class="card-title mb-0">{{ offer.title }}</h5>
+                        <span class="badge bg-primary">Score: {{ score }}/100</span>
+                    </div>
+                    <p class="mb-1"><strong>Vendeur :</strong> {{ offer.producer.username }}</p>
+                    <p class="mb-1"><strong>Produit :</strong> {{ offer.product.name }}</p>
+                    <p class="mb-1"><strong>Province :</strong> {{ offer.province }}</p>
+                    <p class="mb-1"><strong>Ville :</strong> {{ offer.city }}</p>
+                    <p class="mb-1"><strong>Quantité :</strong> {{ offer.quantity }} {{ offer.unit }}</p>
+                    <p class="mb-0"><strong>Prix :</strong> {{ offer.unit_price }} {{ offer.currency }}/{{ offer.unit }}</p>
+                    <a href="{% url 'offer-detail' offer.id %}" class="btn btn-sm btn-outline-success mt-2">Voir l'offre</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p class="text-muted">Aucune offre compatible trouvée.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<div class="mt-4 d-flex gap-2 flex-wrap">
+
+    <a href="{% url 'requests' %}" class="btn btn-secondary">
+        Retour aux demandes
+    </a>
+
+    <a href="{% url 'product-detail' purchase_request.product.slug %}" class="btn btn-outline-success">
+        Voir le produit
+    </a>
+
+</div>
+
+{% endblock %}

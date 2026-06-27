@@ -1,0 +1,23 @@
+from django.conf import settings
+from django.db import models
+
+
+class Notification(models.Model):
+    class Channel(models.TextChoices):
+        IN_APP = "in_app", "Application"
+        SMS = "sms", "SMS"
+        EMAIL = "email", "Email"
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="notifications")
+    title = models.CharField(max_length=180)
+    body = models.TextField()
+    channel = models.CharField(max_length=16, choices=Channel.choices, default=Channel.IN_APP)
+    is_read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+        indexes = [models.Index(fields=["user", "is_read", "created_at"])]
+
+    def __str__(self):
+        return self.title

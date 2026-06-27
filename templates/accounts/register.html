@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}
+Inscription
+{% endblock %}
+
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+
+        <div class="card">
+            <div class="card-body">
+                <h1 class="card-title text-center mb-4">Inscription</h1>
+
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label for="id_username" class="form-label">Nom d'utilisateur</label>
+                        <input type="text" name="username" class="form-control" id="id_username" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="id_email" class="form-label">Email</label>
+                        <input type="email" name="email" class="form-control" id="id_email" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="id_first_name" class="form-label">Prénom</label>
+                        <input type="text" name="first_name" class="form-control" id="id_first_name">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="id_last_name" class="form-label">Nom</label>
+                        <input type="text" name="last_name" class="form-control" id="id_last_name">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="id_role" class="form-label">Rôle</label>
+                        <select name="role" class="form-select" id="id_role" required>
+                            <option value="producer">Producteur</option>
+                            <option value="supplier">Fournisseur</option>
+                            <option value="buyer" selected>Acheteur</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="id_phone" class="form-label">Téléphone</label>
+                        <input type="text" name="phone" class="form-control" id="id_phone">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="id_password" class="form-label">Mot de passe</label>
+                        <input type="password" name="password" class="form-control" id="id_password" required>
+                    </div>
+
+                    {% if form.errors %}
+                    <div class="alert alert-danger">
+                        {% for field, errors in form.errors.items %}
+                        {% for error in errors %}
+                        {{ error }}
+                        {% endfor %}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <button type="submit" class="btn btn-success w-100">S'inscrire</button>
+                </form>
+
+                <p class="text-center mt-3">
+                    Déjà inscrit ? <a href="{% url 'login' %}">Se connecter</a>
+                </p>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

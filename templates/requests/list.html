@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}
+Demandes d'achat
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header d-flex flex-wrap justify-content-between align-items-center gap-3">
+
+    <div>
+        <h1>Demandes d'achat</h1>
+        <p class="text-muted mb-0">
+            Besoins publiés par les acheteurs.
+        </p>
+    </div>
+
+</div>
+
+<div class="product-grid">
+
+{% for purchase_request in requests %}
+
+<div class="product-card">
+
+    <span class="badge">
+        {{ purchase_request.get_status_display }}
+    </span>
+
+    <h3>{{ purchase_request.product.name }}</h3>
+
+    <p>
+        Quantité :
+        {{ purchase_request.quantity }}
+        {{ purchase_request.unit }}
+    </p>
+
+    <p>
+        Prix cible :
+        {{ purchase_request.target_price }}
+        {{ purchase_request.currency }}/{{ purchase_request.unit }}
+    </p>
+
+    <p>
+        {{ purchase_request.city }}, {{ purchase_request.province }}
+    </p>
+
+    {% if purchase_request.needed_before %}
+    <p class="text-muted small">
+        Besoin avant le {{ purchase_request.needed_before|date:"d/m/Y" }}
+    </p>
+    {% endif %}
+
+    <a
+        href="{% url 'request-detail' purchase_request.pk %}"
+        class="btn-detail">
+
+        Voir
+
+    </a>
+
+</div>
+
+{% empty %}
+
+<p>
+    Aucune demande disponible.
+</p>
+
+{% endfor %}
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}
+Nouvelle demande
+{% endblock %}
+
+{% block content %}
+
+{% include "partials/price_context.html" %}
+
+<h1 class="mb-4">
+    Publier une demande
+</h1>
+
+<form method="post">
+
+    {% csrf_token %}
+
+    {{ form.as_p }}
+
+    <button
+        type="submit"
+        class="btn btn-success">
+
+        Publier
+
+    </button>
+
+</form>
+
+{% endblock %}

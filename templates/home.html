@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}
+Accueil
+{% endblock %}
+
+{% block content %}
+
+<div class="p-5 mb-4 bg-light rounded-3">
+
+    <div class="container-fluid py-5">
+
+        <h1 class="display-5 fw-bold">
+            Mise en relation agricole
+        </h1>
+
+        <p class="col-md-8 fs-4">
+            Publiez vos offres, exprimez vos besoins d'achat
+            et connectez-vous directement avec producteurs,
+            fournisseurs et acheteurs en RDC.
+        </p>
+
+        <div class="d-flex gap-2 flex-wrap">
+
+            <a href="{% url 'offers' %}" class="btn btn-success btn-lg">
+                Voir les offres
+            </a>
+
+            <a href="{% url 'requests' %}" class="btn btn-warning btn-lg">
+                Voir les demandes
+            </a>
+
+            {% if not user.is_authenticated %}
+            <a href="{% url 'register' %}" class="btn btn-outline-success btn-lg">
+                S'inscrire
+            </a>
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="row g-4">
+
+    <div class="col-md-4">
+
+        <div class="card h-100">
+            <div class="card-body">
+                <h3>Offres</h3>
+                <p>Produits proposés par les producteurs et fournisseurs.</p>
+                <a href="{% url 'offers' %}" class="btn btn-success">Consulter</a>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="col-md-4">
+
+        <div class="card h-100">
+            <div class="card-body">
+                <h3>Demandes</h3>
+                <p>Besoins publiés par les acheteurs.</p>
+                <a href="{% url 'requests' %}" class="btn btn-success">Consulter</a>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="col-md-4">
+
+        <div class="card h-100">
+            <div class="card-body">
+                <h3>Catalogue</h3>
+                <p>Référentiel produits pour publier et filtrer.</p>
+                <a href="{% url 'products' %}" class="btn btn-outline-success">Consulter</a>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

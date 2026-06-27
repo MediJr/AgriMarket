@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}
+Mes commandes
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+        <h1>Mes commandes</h1>
+        <p class="text-muted mb-0">
+            Commandes que vous avez passées.
+        </p>
+    </div>
+
+</div>
+
+<div class="table-responsive">
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Produit</th>
+            <th>Vendeur</th>
+            <th>Quantité</th>
+            <th>Prix</th>
+            <th>Statut</th>
+            <th>Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for order in orders %}
+        <tr>
+            <td>#{{ order.id }}</td>
+            <td>{{ order.offer.product.name }}</td>
+            <td>{{ order.offer.producer.username }}</td>
+            <td>{{ order.quantity }} {{ order.offer.unit }}</td>
+            <td>{{ order.offer.unit_price }} {{ order.offer.currency }}/{{ order.offer.unit }}</td>
+            <td>
+                <span class="badge bg-{% if order.status == 'pending' %}warning{% elif order.status == 'accepted' %}success{% elif order.status == 'completed' %}primary{% elif order.status == 'cancelled' %}danger{% endif %}">
+                    {{ order.get_status_display }}
+                </span>
+            </td>
+            <td>{{ order.created_at|date:"d/m/Y" }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="7" class="text-center">
+                Vous n'avez pas encore passé de commandes.
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+</div>
+
+{% endblock %}

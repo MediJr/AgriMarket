@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}
+Offres agricoles
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header d-flex flex-wrap justify-content-between align-items-center gap-3">
+
+    <div>
+        <h1>Offres agricoles</h1>
+        <p class="text-muted mb-0">
+            Produits proposés par les producteurs et fournisseurs.
+        </p>
+    </div>
+
+    <a href="{% url 'offer-create' %}" class="btn btn-success">
+        Publier une offre
+    </a>
+
+</div>
+
+<div class="product-grid">
+
+{% for offer in offers %}
+
+<div class="product-card">
+
+    <span class="badge">
+        {{ offer.get_status_display }}
+    </span>
+
+    <h3>{{ offer.title }}</h3>
+
+    <p>
+        Produit :
+        {{ offer.product.name }}
+    </p>
+
+    <p>
+        Quantité :
+        {{ offer.quantity }}
+        {{ offer.unit }}
+    </p>
+
+    <p>
+        Prix :
+        {{ offer.unit_price }}
+        {{ offer.currency }}
+    </p>
+
+    <p>
+        {{ offer.city }}, {{ offer.province }}
+    </p>
+
+    <a
+        href="{% url 'offer-detail' offer.pk %}"
+        class="btn-detail">
+
+        Voir
+
+    </a>
+
+</div>
+
+{% empty %}
+
+<p>
+    Aucune offre disponible.
+</p>
+
+{% endfor %}
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,22 @@
+{% if price_context and price_context.record_count %}
+<div class="alert alert-info mb-4" role="alert">
+    <strong>Prix de référence observé</strong>
+    {% if price_context.province %}
+    en {{ price_context.province }}
+    {% endif %}
+    :
+    moyenne {{ price_context.avg_price|floatformat:2 }}
+    {{ price_context.currency }}/{{ price_context.unit }}
+    (min {{ price_context.min_price|floatformat:2 }},
+    max {{ price_context.max_price|floatformat:2 }},
+    {{ price_context.record_count }} relevé{{ price_context.record_count|pluralize }})
+    {% if price_context.last_recorded_at %}
+    — dernier relevé le {{ price_context.last_recorded_at|date:"d/m/Y" }}
+    {% endif %}
+</div>
+{% elif price_context %}
+<div class="alert alert-secondary mb-4" role="alert">
+    Aucun prix de référence validé disponible pour ce produit
+    {% if price_context.province %}en {{ price_context.province }}{% endif %}.
+</div>
+{% endif %}

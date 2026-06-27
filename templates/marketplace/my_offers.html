@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block title %}
+Mes offres
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header d-flex flex-wrap justify-content-between align-items-center gap-3">
+
+    <div>
+        <h1>Mes offres</h1>
+        <p class="text-muted mb-0">
+            Offres publiées et commandes reçues.
+        </p>
+    </div>
+
+    <a href="{% url 'offer-create' %}" class="btn btn-success">
+        Publier une offre
+    </a>
+
+</div>
+
+<h2 class="h4 mb-3">Mes offres publiées</h2>
+
+<div class="product-grid mb-5">
+
+{% for offer in offers %}
+
+<div class="product-card">
+
+    <span class="badge">
+        {{ offer.get_status_display }}
+    </span>
+
+    <h3>{{ offer.title }}</h3>
+
+    <p>Produit : {{ offer.product.name }}</p>
+    <p>Quantité : {{ offer.quantity }} {{ offer.unit }}</p>
+    <p>Prix : {{ offer.unit_price }} {{ offer.currency }}</p>
+    <p>{{ offer.city }}, {{ offer.province }}</p>
+
+    <a href="{% url 'offer-detail' offer.pk %}" class="btn-detail">
+        Voir
+    </a>
+
+</div>
+
+{% empty %}
+
+<p>Vous n'avez pas encore publié d'offres.</p>
+
+{% endfor %}
+
+</div>
+
+<h2 class="h4 mb-3">Commandes reçues</h2>
+
+<div class="table-responsive">
+
+<table class="table table-striped align-middle">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Produit</th>
+            <th>Acheteur</th>
+            <th>Quantité</th>
+            <th>Statut</th>
+            <th>Date</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for order in received_orders %}
+        <tr>
+            <td>#{{ order.id }}</td>
+            <td>{{ order.offer.product.name }}</td>
+            <td>{{ order.buyer.username }}</td>
+            <td>{{ order.quantity }} {{ order.offer.unit }}</td>
+            <td>
+                <span class="badge bg-secondary">
+                    {{ order.get_status_display }}
+                </span>
+            </td>
+            <td>{{ order.created_at|date:"d/m/Y" }}</td>
+            <td class="d-flex gap-1 flex-wrap">
+                {% if order.status == 'pending' %}
+                <form method="post" action="{% url 'order-accept' order.pk %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm btn-success">Accepter</button>
+                </form>
+                <form method="post" action="{% url 'order-reject' order.pk %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm btn-danger">Refuser</button>
+                </form>
+                {% elif order.status == 'accepted' %}
+                <form method="post" action="{% url 'order-complete' order.pk %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm btn-primary">Terminer</button>
+                </form>
+                {% else %}
+                <span class="text-muted small">Aucune action</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="7" class="text-center">
+                Aucune commande reçue pour le moment.
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+</div>
+
+{% endblock %}

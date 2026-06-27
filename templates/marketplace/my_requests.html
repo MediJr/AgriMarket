@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}
+Mes demandes
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header d-flex flex-wrap justify-content-between align-items-center gap-3">
+
+    <div>
+        <h1>Mes demandes</h1>
+        <p class="text-muted mb-0">
+            Demandes d'achat que vous avez publiées.
+        </p>
+    </div>
+
+    <a href="{% url 'request-create' %}" class="btn btn-success">
+        Publier une demande
+    </a>
+
+</div>
+
+<div class="product-grid">
+
+{% for request_obj in requests %}
+
+<div class="product-card">
+
+    <span class="badge">
+        {{ request_obj.get_status_display }}
+    </span>
+
+    <h3>{{ request_obj.product.name }}</h3>
+
+    <p>
+        Quantité :
+        {{ request_obj.quantity }}
+        {{ request_obj.unit }}
+    </p>
+
+    <p>
+        Prix cible :
+        {{ request_obj.target_price }}
+        {{ request_obj.currency }}/{{ request_obj.unit }}
+    </p>
+
+    <p>
+        {{ request_obj.city }}, {{ request_obj.province }}
+    </p>
+
+    {% if request_obj.needed_before %}
+    <p class="text-muted small">
+        Besoin avant le {{ request_obj.needed_before|date:"d/m/Y" }}
+    </p>
+    {% endif %}
+
+    <a
+        href="{% url 'request-detail' request_obj.pk %}"
+        class="btn-detail">
+
+        Voir
+
+    </a>
+
+</div>
+
+{% empty %}
+
+<p>
+    Vous n'avez pas encore publié de demandes.
+</p>
+
+{% endfor %}
+
+</div>
+
+{% endblock %}
